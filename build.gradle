@@ -1,0 +1,145 @@
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'maven-publish'
+
+
+compileJava.dependsOn clean
+
+sourceCompatibility = 1.7
+
+configurations.all {
+    resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+}
+   
+
+[compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
+
+repositories { maven{ url "http://127.0.0.1:18081/nexus/content/groups/public/" } }
+
+sourceSets {
+	main {
+		java { srcDirs = ['src/main/java']}
+		resources { srcDirs = ['src/main/resources']}
+	}
+}
+
+ext {	
+	moduleName="dubbo-servers-demo";
+	moduleVersion="0.1-SNAPSHOT"
+	publishUserName = "devadm"
+	publishUserPassword = "Devadm@1212"
+	publishURL="http://127.0.0.1:18081/nexus/content/repositories/snapshots/"
+	builtBy="gradle 2.1"
+}
+
+group = 'com.ai.saas.comment'
+
+dependencies{
+		
+	compile 'org.springframework:spring-test:4.2.4.RELEASE'
+	compile 'org.springframework:spring-jdbc:4.2.4.RELEASE'
+	compile 'org.springframework:spring-tx:4.2.4.RELEASE'
+	compile 'org.springframework:spring-context-support:4.2.4.RELEASE'
+	compile 'junit:junit:4.12'
+	compile 'org.mybatis:mybatis:3.4.0'
+	compile 'org.mybatis:mybatis-spring:1.3.0'
+	compile 'mysql:mysql-connector-java:5.1.36'
+	compile 'org.apache.commons:commons-dbcp2:2.0'
+	compile 'org.apache.logging.log4j:log4j-core:2.5'
+	compile 'org.apache.logging.log4j:log4j-api:2.5'
+	compile 'com.alibaba:dubbox:2.8.4'
+	compile 'org.apache.zookeeper:zookeeper:3.4.6'
+	compile 'org.jboss.resteasy:resteasy-jaxrs:3.0.11.Final'
+	compile 'org.jboss.resteasy:resteasy-client:3.0.11.Final'
+	compile 'org.jboss.resteasy:resteasy-jackson-provider:3.0.11.Final'
+	compile 'org.javassist:javassist:3.19.0-GA'
+	compile 'com.ai.runner.xss.filter:xss-firewall:1.4'
+	compile 'org.owasp.antisamy:antisamy:1.5.3'
+	compile 'org.mybatis.generator:mybatis-generator-core:1.3.2'
+	compile 'org.mybatis.generator:mybatis-generator-plugin:1.0-SNAPSHOT'
+	compile 'com.google.code.gson:gson:2.4'
+
+	compile "jsch:jsch:0.1.29"
+	compile 'redis.clients:jedis:3.0.0'
+	compile 'org.json:json:20140107'
+	compile 'org.springframework:spring-context-support:3.0.5.RELEASE'
+	compile 'org.quartz-scheduler:quartz:1.8.4'
+	
+	compile 'org.apache.tomcat.embed:tomcat-embed-core:8.0.21'
+	compile 'org.apache.tomcat.embed:tomcat-embed-logging-juli:8.0.21'
+	compile 'javax.validation:validation-api:1.1.0.Final'
+	compile 'sun.misc:sun.misc.BASE64Decoder:1.0'
+	//skywalking
+	compile 'com.ai.cloud:skywalking-dubbo-plugin:1.0-SNAPSHOT'
+	compile 'com.ai.cloud:skywalking-spring-plugin:1.0-SNAPSHOT'
+	compile 'com.ai.cloud:skywalking-jdbc-plugin:1.0-SNAPSHOT'
+	compile 'org.aspectj:aspectjweaver:1.8.7'
+	compile 'com.ai.cloud:skywalking-log4j-2.x-plugin:1.0-SNAPSHOT'
+	
+	compile 'org.apache.httpcomponents:httpclient:4.4.1'
+	
+	
+	compile ("com.101tec:zkclient:0.5") {
+		exclude group: 'org.apache.zookeeper', module: 'zookeeper'
+		exclude group: 'log4j', module: 'log4j'
+	}
+	
+}
+jar {
+	baseName moduleName
+	version moduleVersion
+	destinationDir file("$buildDir/lib")
+	exclude "context/**"
+	exclude "mybatis/mapper/**"
+	exclude "spring/**"
+	exclude "log**"
+	manifest {
+		attributes 'packageName': moduleName, 'Built-By': builtBy,'create-date': new Date().format('yyyy-MM-dd HH:mm:ss')
+	}
+}
+
+task publishJar(type:Jar){
+	version moduleVersion
+	baseName moduleName
+	from sourceSets.main.output	
+	include "com/ai/saas/comment/core/rest/*"
+	include "com/ai/saas/comment/core/model/*"
+	include "com/ai/saas/comment/core/model/vo/*"
+	include "com/ai/saas/comment/core/model/dto/*"
+	manifest {
+		attributes 'packageName': moduleName, 'Built-By': builtBy,'Built-date': new Date().format('yyyy-MM-dd HH:mm:ss'),'Manifest-Version':version
+	}
+}
+
+publishing {
+	publications {
+	   publishing.publications.create("${moduleName}", MavenPublication) {
+			groupId group
+			artifactId moduleName
+			version moduleVersion
+			artifact  publishJar
+			}
+	}
+	
+	repositories {
+		maven {
+			url  publishURL
+			credentials {
+				username = publishUserName
+				password = publishUserPassword
+			}
+		}
+	}
+}
+
+task copyDeps(type: Copy) {
+	from(project.configurations.runtime)
+	into project.file('build/3rd-libs')
+}
+
+task copyConfigFiles(type: Copy){
+	from fileTree(dir:'src/main/resources')
+	destinationDir file("build/config")
+}
+
+build.dependsOn copyDeps,copyConfigFiles

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="demoTableExtra" >
+  <resultMap id="BaseResultMap" type="com.ai.saas.comment.core.model.dto.DemoTable" >
+    <id column="demo_id" property="demoId" jdbcType="INTEGER" />
+    <result column="demo_name" property="demoName" jdbcType="VARCHAR" />
+  </resultMap>
+  
+ 
+   <select id="getDemoTableExtra" parameterType="java.util.Map"	resultMap="BaseResultMap">
+		SELECT *
+		FROM
+		DEMO_TABLE
+		WHERE DEMO_ID = #{demoId}			
+	</select> 
+</mapper>

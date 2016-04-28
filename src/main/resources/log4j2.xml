@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="warn">
+	<Appenders>
+		<Console name="Console" target="SYSTEM_OUT">
+			<PatternLayout pattern="[%tid] %-d{yyyy-MM-dd HH:mm:ss.SSS} %c %n[%p] %n%m%n%l" />
+		</Console>
+
+<!-- 		<File name="MyFile" -->
+<!-- 			fileName="/aifs01/users/tstusr12/logs/Aisse-Dubbo-20188.log"> -->
+<!-- 			<PatternLayout> -->
+<!-- 				<Pattern>[%tid] %d %p %c{1.} [%t] %m%n</Pattern> -->
+<!-- 			</PatternLayout> -->
+<!-- 		</File> -->
+		<RollingFile name="RollingFile" fileName="/misfs01/users/passe01/logs/Aisse-Dubbo-20188.log" 
+					filePattern="/misfs01/users/passe01/logs/$${date:yyyy-MM}/aisse-dubbo-%d{MM-dd-yyyy}-%i.log.gz"> 
+<!-- 		 			  filePattern="/misfs01/users/passe01/logs/aisse-dubbo-20188.log.gz"> -->
+                 
+            <PatternLayout>
+				<Pattern>[%tid] %d %p %c{1.} [%t] %m%n</Pattern>
+			</PatternLayout>   
+      		<SizeBasedTriggeringPolicy size="1024MB" />    
+   		 </RollingFile>    
+	</Appenders>
+	<Loggers>
+		<Root level="debug">
+			<AppenderRef ref="Console" />
+<!-- 			<AppenderRef ref="MyFile" /> -->
+			<AppenderRef ref="RollingFile" />
+		</Root>
+	</Loggers>
+</Configuration>

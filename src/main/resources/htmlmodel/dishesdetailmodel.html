@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>demo3</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" type="text/css" href="../../css/jquery/animsition.min.css">
+
+<script type="text/javascript" src="../../js/jquery/jquery-1.11.0.min.js"></script>
+<script type="text/javascript" src="../../js/jquery/jquery.animsition.min.js"></script>
+<script type="text/javascript" src="../../js/jquery/jquerysession.js"></script>
+<script>
+$(document).ready(function() {
+	  //jssession demo
+	  $.session.set('renfeng', 'session');
+	
+	  //css3动画 demo
+	  $(".animsition").animsition({
+	    inClass               :   'fade-in-left-sm',
+	    outClass              :   'fade-out-left-sm',
+	    inDuration            :    1500,
+	    outDuration           :    800,
+	    linkElement           :   '.animsition-link',
+	    // e.g. linkElement   :   'a:not([target="_blank"]):not([href^=#])'
+	    loading               :    true,
+	    loadingParentElement  :   'body', //animsition wrapper element
+	    loadingClass          :   'animsition-loading',
+	    unSupportCss          : [ 'animation-duration',
+	                              '-webkit-animation-duration',
+	                              '-o-animation-duration'
+	                            ],
+	    overlay               :   false,
+	    overlayClass          :   'animsition-overlay-slide',
+	    overlayParentElement  :   'body'
+	  });
+	  
+	  //共用方法
+ 	var localhostPaht = window.document.location.href.substring(0,window.document.location.href.lastIndexOf(window.document.location.pathname))
+ 	+ window.document.location.pathname.substring(0, window.document.location.pathname.substr(1).indexOf("/") + 1) + "/";
+
+ 
+ 	
+ 	$.ajax({
+        type: "POST",
+        url: localhostPaht + "demo/demopage2",
+        timeout: 120000,
+//         data: 
+        dataType: "json",
+        async: true,
+        success: function(data) {
+           var usernamestr="<a style=\"height:100%;width:100%;font-size:100px;\" href=\"./demo4.html\" >"+data.last_name+"</a>";
+           $("#div2").append(usernamestr);
+        },
+        error: function(data) {
+        	alert("error");
+        }
+    })
+	  
+});          
+
+</script>
+
+</head>
+<body  class="animsition" style="background-color:chartreuse;height:750px;">
+	<div id="div1">
+		<a style="height:100%;width:100%;font-size:100px;" href="./demo4.html" >demo3</a>
+	</div>
+	
+	<div id="div2">
+	</div>
+	
+	
+</body>
+</html>
