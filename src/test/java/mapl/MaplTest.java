@@ -15,24 +15,13 @@ public class MaplTest {
 	
 	
 	public static void main(String[] args) throws Exception{
-		getDemoTableTest();
-		getDemoTableExtraTest();
+
+		System.out.println("Hello World");
+
+		//getDemoTableTest();
+		//getDemoTableExtraTest();
 	
 		
-	}
-	
-	public static void getDemoTableTest() throws IOException, URISyntaxException{
-		String service = "http://127.0.0.1:20166/comment";
-		String url = "/demoApi/getDemoTable";
-		String result = HttpClientUtil.sendPostRequest(service + url, "1");
-		System.out.println("MAIN return :" + result);
-	}
-	
-	public static void getDemoTableExtraTest() throws IOException, URISyntaxException{
-		String service = "http://127.0.0.1:20166/comment";
-		String url = "/demoApi/getDemoTableExtra";
-		String result = HttpClientUtil.sendPostRequest(service + url, "2");
-		System.out.println("MAIN return :" + result);
 	}
 	
 }
